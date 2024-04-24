@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class SC_MainMenu : MonoBehaviour
@@ -39,7 +40,12 @@ public class SC_MainMenu : MonoBehaviour
 
     public void QuitButton()
     {
-        // Quit Game
+#if UNITY_EDITOR
+        // Stop playing the scene in Unity editor
+        EditorApplication.isPlaying = false;
+#else
+        // Quit the application
         Application.Quit();
+#endif
     }
 }
