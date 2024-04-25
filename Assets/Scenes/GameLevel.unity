@@ -3066,11 +3066,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -4938383627096466842, guid: 7c526aefd760d4446883e921c82dfa04, type: 3}
       propertyPath: ItemName
-      value: Fries & Drink Meal
+      value: Meal
       objectReference: {fileID: 0}
     - target: {fileID: 1463332165799461122, guid: 7c526aefd760d4446883e921c82dfa04, type: 3}
       propertyPath: m_Name
       value: french frice
+      objectReference: {fileID: 0}
+    - target: {fileID: 1463332165799461122, guid: 7c526aefd760d4446883e921c82dfa04, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1463332165799828770, guid: 7c526aefd760d4446883e921c82dfa04, type: 3}
       propertyPath: m_LocalScale.x
@@ -3086,7 +3090,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1463332165799828770, guid: 7c526aefd760d4446883e921c82dfa04, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -274.44016
+      value: -272.712
       objectReference: {fileID: 0}
     - target: {fileID: 1463332165799828770, guid: 7c526aefd760d4446883e921c82dfa04, type: 3}
       propertyPath: m_LocalPosition.y
