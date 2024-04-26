@@ -6,24 +6,25 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     public GameObject pauseMenu;
-    public static bool isPaused;
+    public static bool isPaused;  // This variable tracks if the game is paused.
+
     // Start is called before the first frame update
     void Start()
     {
         pauseMenu.SetActive(false);
-        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused)
             {
                 ResumeGame();
             }
-            else (isPaused){
+            else  // Fixed the syntax error here.
+            {
                 PauseGame();
             }
         }
@@ -32,27 +33,26 @@ public class PauseMenu : MonoBehaviour
     public void PauseGame()
     {
         pauseMenu.SetActive(true);
-        Time.timeScale = 0f;
+        Time.timeScale = 0f;  // Stops all time-based operations in the game.
         isPaused = true;
-
     }
 
     public void ResumeGame()
     {
         pauseMenu.SetActive(false);
-        Time.timeScale = 1f;
+        Time.timeScale = 1f;  // Resumes all time-based operations at normal speed.
         isPaused = false;
     }
 
     public void GoToMainMenu()
     {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene("GameLevel")
+        Time.timeScale = 1f;  // Ensure that the game time is normalized before switching scenes.
+        SceneManager.LoadScene("GameLevel");  // Ensure this is the correct name of your main menu scene.
     }
 
     public void QuitGame()
     {
-        Application.Quit();
+        Application.Quit();  // Exits the game. Note that this will only work in a built version, not in the Unity editor.
     }
 
 }
