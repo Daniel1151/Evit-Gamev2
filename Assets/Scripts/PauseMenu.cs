@@ -12,6 +12,7 @@ public class PauseMenu : MonoBehaviour
     void Start()
     {
         pauseMenu.SetActive(false);
+        Cursor.visible = false;
     }
 
     // Update is called once per frame
@@ -35,6 +36,8 @@ public class PauseMenu : MonoBehaviour
         pauseMenu.SetActive(true);
         Time.timeScale = 0f;  // Stops all time-based operations in the game.
         isPaused = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public void ResumeGame()
@@ -42,6 +45,8 @@ public class PauseMenu : MonoBehaviour
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;  // Resumes all time-based operations at normal speed.
         isPaused = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     public void GoToMainMenu()
