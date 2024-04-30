@@ -1,9 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.SocialPlatforms;
-using System.Reflection;
 
 namespace MimicSpace
 {
@@ -38,35 +35,28 @@ namespace MimicSpace
         public AudioClip[] chasingSounds;
         public AudioClip[] scoutingSounds;
         public AudioClip[] attackSounds;
-        public AudioSource audioSource; // Enemy's own AudioSource
-        // public SoundManager soundManager;
-        // public EnemySoundManager enemySoundManager;
+        public AudioSource audioSource;
 
         [Header("Attack Settings")]
-        public float attackRange = 2.0f; // Distance within which the AI will attack
-        public float attackCooldown = 5.0f; // Time between attacks
+        public float attackRange = 2.0f;
+        public float attackCooldown = 5.0f;
         public float attackDamage = 20f;
-        // public PlayerStats playerStats;
-        private float lastAttackTime = 0; // When the last attack happened
+        private float lastAttackTime = 0;
 
         [Header("Attack Effects")]
-        public GameObject attackEffect;  // The GameObject to activate during attacks
+        public GameObject attackEffect;
 
-        // private Mimic myMimic;
         private float timeSinceLastSighted = 0f;
         private float timeSinceLastWaypointChange = 0f;
         private Vector3 currentScoutTarget;
         private Vector3 lastKnownPlayerPosition;
         public bool isChasing = false;
-        public bool playerSpotted = false;  // Track if the player was recently spotted
-
-
+        public bool playerSpotted = false;
 
         private void Start()
         {
             agent.speed = patrolSpeed;
             lastKnownPlayerPosition = transform.position;
-
             InitializeComponents();
         }
 
@@ -76,32 +66,15 @@ namespace MimicSpace
             if (audioSource == null) audioSource = GetComponent<AudioSource>();
             if (eyeObject == null) eyeObject = transform;  // Default to this GameObject if not set
 
-            // Assign target as Player by default, adjust accordingly
             if (target == null)
                 target = GameObject.FindGameObjectWithTag("Player")?.transform;
 
-
-            // Validate or populate the visualIndicators array
             if (visualIndicators == null || visualIndicators.Length == 0)
                 visualIndicators = GameObject.FindGameObjectsWithTag("VisualIndicator");
-
-            /*
-            // Ensure there is a PlayerStats reference
-            if (playerStats == null)
-                playerStats = FindObjectOfType<PlayerStats>();
-            */
-
-            /*
-            if (attackEffect == null)
-            {
-                attackEffect = GameObject.FindGameObjectWithTag("Lightning");
-            }
-            */
         }
 
         void Update()
         {
-
             timeSinceLastWaypointChange += Time.deltaTime;
 
             if (target != null)
@@ -126,7 +99,6 @@ namespace MimicSpace
                 {
                     agent.SetDestination(target.position);
 
-                    // Check if player is within attack range
                     if (Vector3.Distance(transform.position, target.position) <= attackRange)
                     {
                         AttackPlayer();
@@ -151,25 +123,8 @@ namespace MimicSpace
                 FindNewScoutLocation();
             }
 
-            // UpdateMimicVelocity();
             UpdateVisuals();
-
-            // AdjustPatrolRadius();
         }
-
-        /*
-        private void AdjustPatrolRadius()
-        {
-            if (patrolRadius > 1f)
-            {
-                patrolRadius = basePatrolRadius * (1 - GameManager.Instance.difficulty / GameManager.Instance.maxDifficulty);
-            }
-            else
-            {
-                patrolRadius = 1f;
-            }
-        }
-        */
 
         private void UpdateVisuals()
         {
@@ -178,27 +133,19 @@ namespace MimicSpace
             {
                 if (indicator != null)
                 {
-                    // Update Material Color
                     Renderer renderer = indicator.GetComponent<Renderer>();
                     if (renderer != null)
                     {
-                        // Update base color
                         renderer.material.color = Color.Lerp(renderer.material.color, targetColor, Time.deltaTime * colorTransitionSpeed);
-
-                        // Update emission color
                         Color currentEmissionColor = renderer.material.GetColor("_EmissionColor");
-                        Color targetEmissionColor = targetColor * Mathf.LinearToGammaSpace(1.0f); // Adjust brightness here if necessary
+                        Color targetEmissionColor = targetColor * Mathf.LinearToGammaSpace(1.0f);
                         renderer.material.SetColor("_EmissionColor", Color.Lerp(currentEmissionColor, targetEmissionColor, Time.deltaTime * colorTransitionSpeed));
                     }
-
-                    // Example to change Light color
                     Light light = indicator.GetComponent<Light>();
                     if (light != null)
                     {
                         light.color = Color.Lerp(light.color, targetColor, Time.deltaTime * colorTransitionSpeed);
                     }
-
-                    // Add more component changes as needed
                 }
             }
         }
@@ -207,7 +154,6 @@ namespace MimicSpace
         {
             isChasing = true;
             agent.speed = chaseSpeed;
-            // soundManager.FadeInMusic();
         }
 
         private void ContinueChase()
@@ -215,15 +161,11 @@ namespace MimicSpace
             timeSinceLastSighted += Time.deltaTime;
         }
 
-
-
         private void FindNewScoutLocation()
         {
             Vector3 randomDirection = Random.insideUnitSphere * patrolRadius;
             randomDirection.y = 0; // Keep the direction horizontal
             Vector3 newTargetPosition = target.position + randomDirection;
-
-            // Try to find a valid NavMesh position within the patrol radius
             if (NavMesh.SamplePosition(newTargetPosition, out NavMeshHit hit, patrolRadius, NavMesh.AllAreas))
             {
                 currentScoutTarget = hit.position;
@@ -231,26 +173,6 @@ namespace MimicSpace
                 timeSinceLastWaypointChange = 0;
             }
         }
-
-        /*
-        private void UpdateEyeDirection()
-        {
-            Quaternion targetRotation;
-            if (isChasing)
-            {
-                // Look directly at the target
-                targetRotation = Quaternion.LookRotation(target.position - eyeObject.position);
-            }
-            else
-            {
-                // Reset to the initial rotation or a neutral rotation
-                targetRotation = Quaternion.Euler(0, transform.eulerAngles.y, 0); // Use this if you want to align with the main object's y rotation
-            }
-
-            // Smoothly interpolate the rotation using Slerp or Lerp
-            eyeObject.rotation = Quaternion.Slerp(eyeObject.rotation, targetRotation, Time.deltaTime * 5); // Adjust the 5 to your preferred speed
-        }
-        */
 
         private bool CanSeePlayer()
         {
@@ -273,8 +195,6 @@ namespace MimicSpace
         {
             if (!isChasing)
             {
-                //audioSource.PlayOneShot(spottedSounds[Random.Range(0, spottedSounds.Length)]);
-                // soundManager.PlayJumpScareSound();
                 ChasePlayer();
             }
         }
@@ -286,39 +206,16 @@ namespace MimicSpace
                 timeSinceLastSighted = 0;
                 isChasing = false;
                 agent.speed = patrolSpeed;
-                // soundManager.FadeOutMusic();
             }
         }
-        
-        /*
-        private void UpdateMimicVelocity()
-        {
-
-        }
-        */
-
-        /*
-        // Helper method to play random sound from an array
-        public void PlayRandomSound(AudioClip[] clips, float delay, float pitchAdded, bool randomPitch, float spatialBlend)
-        {
-            if (clips.Length == 0) return; // If no clips are available, exit
-
-            AudioClip clipToPlay = clips[Random.Range(0, clips.Length)];
-            if (cowsins.SoundManager.Instance != null)
-            {
-            }
-        }
-        */
 
         private void AttackPlayer()
         {
             if (Time.time - lastAttackTime >= attackCooldown)
             {
-                lastAttackTime = Time.time; // Update last attack time
+                lastAttackTime = Time.time;
                 Debug.Log("Attacking player now!");
-                // playerStats.Damage(attackDamage);  // Deal damage to the player
-                // enemySoundManager.PlayRandomSoundForDuration(attackSounds, 0.5f);
-                StartCoroutine(ActivateAttackEffect());  // Start the coroutine to show and hide the attack effect
+                StartCoroutine(ActivateAttackEffect());
             }
             else
             {
@@ -330,12 +227,11 @@ namespace MimicSpace
         {
             if (attackEffect != null)
             {
-                attackEffect.SetActive(true);  // Activate the GameObject
-                yield return new WaitForSeconds(0.5f);  // Wait for half a second
-                attackEffect.SetActive(false);  // Deactivate the GameObject
+                attackEffect.SetActive(true);
+                yield return new WaitForSeconds(0.5f);
+                attackEffect.SetActive(false);
             }
         }
-
 
         private void OnDrawGizmos()
         {
@@ -347,13 +243,12 @@ namespace MimicSpace
             Gizmos.DrawRay(eyePosition, forward * sightRange);
             Gizmos.DrawRay(eyePosition, forwardLeft * sightRange);
 
-            // Draw a destination gizmo
             if (agent != null && agent.isActiveAndEnabled)
             {
                 Gizmos.color = Color.blue;
                 Vector3 destination = agent.destination;
-                Gizmos.DrawSphere(destination, 0.5f); // Draws a blue sphere at the agent's destination
-                Gizmos.DrawLine(transform.position, destination); // Optional: draw a line from the agent to the destination
+                Gizmos.DrawSphere(destination, 0.5f);
+                Gizmos.DrawLine(transform.position, destination);
             }
         }
     }
